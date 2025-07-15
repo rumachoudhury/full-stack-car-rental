@@ -71,18 +71,30 @@ export const AppProvider = ({ children }) => {
     toast.success("You have been logged out");
   };
 
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   setToken(token);
+
+  //   //Only fetch cars if token exists and attach it first
+  //   if (token) {
+  //     axios.defaults.headers.common["Authorization"] = `${token}`;
+  //     fetchCars();
+  //   }
+  // }, []);
+
+  // uaeEffect to fetch user data when token is available
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     setToken(token);
 
-    //Only fetch cars if token exists and attach it first
     if (token) {
       axios.defaults.headers.common["Authorization"] = `${token}`;
-      fetchCars();
     }
+
+    fetchCars(); //Always runs
   }, []);
 
-  // uaeEffect to fetch user data when token is available
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common["Authorization"] = `${token}`;
