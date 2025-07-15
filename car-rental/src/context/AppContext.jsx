@@ -23,23 +23,6 @@ export const AppProvider = ({ children }) => {
   const [returnDate, setReturnDate] = useState("");
   const [cars, setCars] = useState([]);
 
-  // const fetchUser = async () => {
-  //   try {
-  //     const { data } = await axios.get("/api/user/data");
-  //     console.log("Fetched cars:", data);
-  //     if (data.success && data.user) {
-  //       setUser(data.user);
-  //       setIsOwner(data.user.role === "owner");
-  //     } else {
-  //       navigate("/");
-  //     }
-  //   } catch (error) {
-  //     toast.error(error.message);
-  //   }
-  // };
-
-  //function to fetch all cars from the server
-
   const fetchUser = useCallback(async () => {
     try {
       const { data } = await axios.get("/api/user/data");
