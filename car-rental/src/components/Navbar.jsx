@@ -12,9 +12,33 @@ function Navbar() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
+  // const changeRole = async () => {
+  //   try {
+  //     const { data } = await axios.post("/api/owner/change-role");
+  //     if (data.success) {
+  //       setIsOwner(true);
+  //       toast.success(data.message);
+  //     } else {
+  //       toast.error(data.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error(error.message);
+  //   }
+  // };
+
   const changeRole = async () => {
     try {
-      const { data } = await axios.post("/api/owner/change-role");
+      const token = localStorage.getItem("token"); // Get token from storage
+      const { data } = await axios.post(
+        "/api/owner/change-role",
+        {},
+        {
+          headers: {
+            Authorization: token, // Pass token here
+          },
+        }
+      );
+
       if (data.success) {
         setIsOwner(true);
         toast.success(data.message);
@@ -25,6 +49,7 @@ function Navbar() {
       toast.error(error.message);
     }
   };
+
   return (
     <motion.div
       initial={{ y: -20, opacity: 0 }}
