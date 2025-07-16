@@ -130,49 +130,33 @@
 
 // -------------
 
-//Updated file
-import React, { useCallback, useEffect, useState } from "react";
+//rewatch one
+import React, { useEffect, useState } from "react";
+
 import Title from "../../components/owner/Title";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
 function ManageBookings() {
   const { axios, currency } = useAppContext();
+
   const [bookings, setBookings] = useState([]);
 
-  // ✅ Fixed: Token added manually in headers
-  const fetchOwnerBookings = useCallback(async () => {
+  const fetchOwnerBookings = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("No token found. Please log in.");
-        return;
-      }
-
-      const { data } = await axios.get("/api/bookings/owner", {
-        headers: {
-          Authorization: token, // or use `Bearer ${token}` if required
-        },
-      });
-
+      const { data } = await axios.get("/api/bookings/owner");
       data.success ? setBookings(data.bookings) : toast.error(data.message);
     } catch (error) {
       toast.error(error.message);
     }
-  }, [axios]);
+  };
 
   const changeBookingStatus = async (bookingId, status) => {
     try {
-      const token = localStorage.getItem("token");
-      const { data } = await axios.post(
-        "/api/bookings/change-status",
-        { bookingId, status },
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
+      const { data } = await axios.post("/api/bookings/change-status", {
+        bookingId,
+        status,
+      });
 
       if (data.success) {
         toast.success(data.message);
@@ -187,11 +171,11 @@ function ManageBookings() {
 
   useEffect(() => {
     fetchOwnerBookings();
-  }, [fetchOwnerBookings]);
+  });
 
   return (
     <div className="px-4 pt-10 md:px-10 w-full">
-      <Title title="Manage Booking" subTitle="View and modify your bookings" />
+      <Title title="Manage Bookings" subTitle="View and modify your bookings" />
 
       <div className="max-w-3xl w-full rounded-md overflow-hidden border border-borderColor mt-6">
         <table className="w-full border-collapse text-left text-sm text-gray-600">
@@ -217,6 +201,7 @@ function ManageBookings() {
                     alt=""
                     className="h-12 w-12 aspect-square rounded-md object-cover"
                   />
+
                   <p className="font-medium max-md:hidden">
                     {booking.car.brand} {booking.car.model}
                   </p>
@@ -238,6 +223,7 @@ function ManageBookings() {
                 </td>
 
                 <td className="p-3">
+                  {/* if Pending it will show the dropdown menu */}
                   {booking.status === "pending" ? (
                     <select
                       onChange={(e) =>

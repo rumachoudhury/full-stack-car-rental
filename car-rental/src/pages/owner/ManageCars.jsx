@@ -35,7 +35,7 @@ export default function ManageCars() {
     }
   }, [axios]);
 
-  const toggleAvailablity = async (carId) => {
+  const toggleAvailability = async (carId) => {
     try {
       const { data } = await axios.post("/api/owner/toggle-car", { carId });
       if (data.success) {
@@ -133,7 +133,7 @@ export default function ManageCars() {
 
                 <td className="flex items-center p-3">
                   <img
-                    onClick={() => toggleAvailablity(car._id)}
+                    onClick={() => toggleAvailability(car._id)}
                     src={
                       car.isAvailable ? assets.eye_icon : assets.eye_close_icon
                     }

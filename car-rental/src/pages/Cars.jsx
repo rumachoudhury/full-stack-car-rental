@@ -20,11 +20,11 @@ function Cars() {
   const [input, setInput] = useState("");
 
   const isSearchData = pickupLocation && pickupDate && returnDate;
-  const [filterCars, setFilterCars] = useState([]);
+  const [filteredCars, setFilteredCars] = useState([]);
 
   const applyFilter = async () => {
     if (input === "") {
-      setFilterCars(cars);
+      setFilteredCars(cars);
       return null;
     }
 
@@ -33,11 +33,10 @@ function Cars() {
         car.brand.toLowerCase().includes(input.toLowerCase()) ||
         car.model.toLowerCase().includes(input.toLowerCase()) ||
         car.category.toLowerCase().includes(input.toLowerCase()) ||
-        car.category.toLowerCase().includes(input.toLowerCase()) ||
         car.transmission.toLowerCase().includes(input.toLowerCase())
       );
     });
-    setFilterCars(filtered);
+    setFilteredCars(filtered);
   };
 
   const searchCarAvailability = async () => {
@@ -48,7 +47,7 @@ function Cars() {
     });
 
     if (data.success) {
-      setFilterCars(data.availableCars);
+      setFilteredCars(data.availableCars);
 
       if (data.availableCars.length === 0) {
         toast("No cars are available");
@@ -103,11 +102,11 @@ function Cars() {
       >
         {/* dummyData from assets.js file */}
         <p className="text-gray-500 xl:px-20 max-w-7xl mx-auto">
-          Showing {filterCars.length} Cars
+          Showing {filteredCars.length} Cars
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-4 xl:px-20 max-w-7xl mx-auto">
-          {filterCars.map((car, index) => (
+          {filteredCars.map((car, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}

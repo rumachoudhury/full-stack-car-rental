@@ -39,6 +39,25 @@ function Dashboard() {
     },
   ];
 
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const { data } = await axios.get("/api/owner/dashboard");
+        if (data.success) {
+          setData(data.dashboardData);
+        } else {
+          toast.error(data.message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+
+    if (isOwner) {
+      fetchDashboardData();
+    }
+  }, [isOwner, axios]);
+
   // useEffect(() => {
   //   const fetchDashboardData = async () => {
   //     try {
@@ -57,25 +76,6 @@ function Dashboard() {
   //     fetchDashboardData();
   //   }
   // }, [isOwner]);
-
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const { data } = await axios.get("/api/owner/dashboard");
-        if (data.success) {
-          setData(data.dashboardData);
-        } else {
-          toast.error(data.message);
-        }
-      } catch (error) {
-        toast.error(error.message);
-      }
-    };
-
-    if (isOwner) {
-      fetchDashboardData();
-    }
-  }, [isOwner]);
 
   return (
     <div className="px-4 pt-10 md:px-10 flex-1">

@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 export const AppContext = createContext();
 
-export const AppProvider = ({ children }) => {
+const AppProvider = ({ children }) => {
   const navigate = useNavigate();
   const currency = import.meta.env.VITE_CURRENCY;
   const [token, setToken] = useState(null);
@@ -23,6 +23,7 @@ export const AppProvider = ({ children }) => {
   const [returnDate, setReturnDate] = useState("");
   const [cars, setCars] = useState([]);
 
+  // Fetch user data
   const fetchUser = useCallback(async () => {
     try {
       const { data } = await axios.get("/api/user/data");
@@ -35,6 +36,7 @@ export const AppProvider = ({ children }) => {
     }
   }, []);
 
+  // Fetch cars
   const fetchCars = async () => {
     try {
       const { data } = await axios.get("/api/user/cars");
@@ -54,34 +56,45 @@ export const AppProvider = ({ children }) => {
     toast.success("You have been logged out");
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setToken(token);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   setToken(token);
 
-    //Only fetch cars if token exists and attach it first
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = `${token}`;
+  //   //Only fetch cars if token exists and attach it first
+  //   if (token) {
+  //     axios.defaults.headers.common["Authorization"] = `${token}`;
+  //     fetchCars();
+  //   }
+  // }, []);
+
+  // uaeEffect to fetch user data when token is available
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   setToken(token);
+
+  //   if (token) {
+  //     axios.defaults.headers.common["Authorization"] = `${token}`;
+  //     fetchCars();
+  //   }
+
+  //   // fetchCars(); //Always runs
+  // }, []);
+
+  useEffect(() => {
+    // On app load, get token and fetch cars
+    const savedToken = localStorage.getItem("token");
+    setToken(savedToken);
+
+    if (savedToken) {
+      axios.defaults.headers.common["Authorization"] = savedToken;
       fetchCars();
     }
   }, []);
 
-  // uaeEffect to fetch user data when token is available
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setToken(token);
-
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = `${token}`;
-    }
-
-    fetchCars(); //Always runs
-  }, []);
-
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common["Authorization"] = `${token}`;
-      fetchUser();
+      fetchUser(); //when token is set
     }
   }, [token, fetchUser]);
 
@@ -110,6 +123,8 @@ export const AppProvider = ({ children }) => {
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
-export const useAppContext = () => {
+const useAppContext = () => {
   return useContext(AppContext);
 };
+
+export { AppProvider, useAppContext };
