@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 export const AppContext = createContext();
 
-const AppProvider = ({ children }) => {
+export const AppProvider = ({ children }) => {
   const navigate = useNavigate();
   const currency = import.meta.env.VITE_CURRENCY;
   const [token, setToken] = useState(null);
@@ -40,6 +40,7 @@ const AppProvider = ({ children }) => {
   const fetchCars = async () => {
     try {
       const { data } = await axios.get("/api/user/cars");
+
       data.success ? setCars(data.cars) : toast.error(data.message);
     } catch (error) {
       toast.error(error.message);
@@ -63,40 +64,44 @@ const AppProvider = ({ children }) => {
   //   //Only fetch cars if token exists and attach it first
   //   if (token) {
   //     axios.defaults.headers.common["Authorization"] = `${token}`;
-  //     fetchCars();
+  //     // fetchCars();
   //   }
+  //   fetchCars();
   // }, []);
 
-  // uaeEffect to fetch user data when token is available
+  // // uaeEffect to fetch user data when token is available
   // useEffect(() => {
   //   const token = localStorage.getItem("token");
   //   setToken(token);
 
   //   if (token) {
   //     axios.defaults.headers.common["Authorization"] = `${token}`;
-  //     fetchCars();
+  //     // fetchCars();
   //   }
 
-  //   // fetchCars(); //Always runs
+  //   fetchCars(); //Always runs
   // }, []);
 
+  // useEffect(() => {
+  //   if (token) {
+  //     axios.defaults.headers.common["Authorization"] = `${token}`;
+  //     // fetchUser(); //when token is set
+  //   }
+  //   fetchUser();
+  // }, [token, fetchUser]);
+
   useEffect(() => {
-    // On app load, get token and fetch cars
     const savedToken = localStorage.getItem("token");
     setToken(savedToken);
 
     if (savedToken) {
-      axios.defaults.headers.common["Authorization"] = savedToken;
-      fetchCars();
+      axios.defaults.headers.common["Authorization"] = `${savedToken}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"]; //Clear for guests
     }
-  }, []);
 
-  useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = `${token}`;
-      fetchUser(); //when token is set
-    }
-  }, [token, fetchUser]);
+    fetchCars(); //Always fetch cars
+  }, []);
 
   const value = {
     navigate,
@@ -123,8 +128,6 @@ const AppProvider = ({ children }) => {
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
-const useAppContext = () => {
+export const useAppContext = () => {
   return useContext(AppContext);
 };
-
-export { AppProvider, useAppContext };

@@ -58,7 +58,7 @@ function Cars() {
 
   useEffect(() => {
     isSearchData && searchCarAvailability();
-  }, []);
+  });
 
   useEffect(() => {
     cars.length > 0 && !isSearchData && applyFilter();
